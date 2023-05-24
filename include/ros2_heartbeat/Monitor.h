@@ -10,6 +10,7 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <tuple>
 #include <chrono>
 #include <string>
 #include <memory>
@@ -40,7 +41,7 @@ public:
     rclcpp::Node & node_hdl);
 
 
-  bool isTimeout() const;
+  std::tuple<bool, std::chrono::milliseconds> isTimeout() const;
 
 
 private:

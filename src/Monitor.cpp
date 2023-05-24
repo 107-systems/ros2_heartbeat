@@ -43,12 +43,13 @@ Monitor::Monitor(
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool Monitor::isTimeout() const
+std::tuple<bool, std::chrono::milliseconds> Monitor::isTimeout() const
 {
   auto const now = std::chrono::steady_clock::now();
-  auto const time_since_last_heartbeat = (now - _prev_heartbeat_timepoint);
+  auto const time_since_last_heartbeat = std::chrono::duration_cast<std::chrono::milliseconds>(now - _prev_heartbeat_timepoint);
 
-  return (std::chrono::duration_cast<std::chrono::milliseconds>(time_since_last_heartbeat) > _heartbeat_timeout);
+  bool const is_timeout = (time_since_last_heartbeat > _heartbeat_timeout);
+  return std::make_tuple(is_timeout, time_since_last_heartbeat);
 }
 
 /**************************************************************************************
