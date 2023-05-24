@@ -14,6 +14,7 @@ find_package(std_msgs REQUIRED)
 #######################################################################################
 add_library(${ROS2_HEARTBEAT_TARGET} STATIC
   src/Monitor.cpp
+  src/Publisher.cpp
 )
 #######################################################################################
 target_include_directories(${ROS2_HEARTBEAT_TARGET} PRIVATE include)
