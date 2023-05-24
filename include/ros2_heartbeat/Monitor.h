@@ -36,6 +36,11 @@ public:
   typedef std::shared_ptr<Monitor> SharedPtr;
 
 
+  static SharedPtr create(rclcpp::Node & node_hdl, std::string const & heartbeat_topic, std::chrono::milliseconds const heartbeat_timeout) {
+    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_timeout);
+  }
+
+
   Monitor(
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
