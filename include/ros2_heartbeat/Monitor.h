@@ -35,10 +35,12 @@ class Monitor
 public:
   typedef std::shared_ptr<Monitor> SharedPtr;
 
+
   Monitor(
+    rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
-    std::chrono::milliseconds const heartbeat_timeout,
-    rclcpp::Node & node_hdl);
+    std::chrono::milliseconds const heartbeat_timeout
+    );
 
 
   std::tuple<bool, std::chrono::milliseconds> isTimeout() const;

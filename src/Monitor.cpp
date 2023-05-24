@@ -22,9 +22,9 @@ namespace heartbeat
  **************************************************************************************/
 
 Monitor::Monitor(
+  rclcpp::Node & node_hdl,
   std::string const & heartbeat_topic,
-  std::chrono::milliseconds const heartbeat_timeout,
-  rclcpp::Node & node_hdl)
+  std::chrono::milliseconds const heartbeat_timeout)
 : _heartbeat_timeout{heartbeat_timeout}
 , _prev_heartbeat_timepoint{std::chrono::steady_clock::now()}
 {
