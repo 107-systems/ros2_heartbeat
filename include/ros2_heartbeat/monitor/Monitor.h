@@ -40,6 +40,7 @@ public:
   typedef std::shared_ptr<Monitor> SharedPtr;
   typedef std::function<void()> OnLivelinessLostFunc;
   typedef std::function<void()> OnLivelinessGainedFunc;
+  typedef std::function<void(rclcpp::QOSDeadlineRequestedInfo & event)> OnDeadlineMissedFunc;
 
 
   static SharedPtr create(
@@ -48,17 +49,19 @@ public:
     std::chrono::milliseconds const heartbeat_deadline,
     std::chrono::milliseconds const heartbeat_liveliness_lease_duration,
     OnLivelinessLostFunc const on_liveliness_lost_func,
-    OnLivelinessGainedFunc const on_liveliness_gained_func)
+    OnLivelinessGainedFunc const on_liveliness_gained_func,
+    OnDeadlineMissedFunc const on_deadline_missed_func)
   {
-    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_deadline, heartbeat_liveliness_lease_duration, on_liveliness_lost_func, on_liveliness_gained_func);
+    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_deadline, heartbeat_liveliness_lease_duration, on_liveliness_lost_func, on_liveliness_gained_func, on_deadline_missed_func);
   }
   static SharedPtr create(
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
     OnLivelinessLostFunc const on_liveliness_lost_func,
-    OnLivelinessGainedFunc const on_liveliness_gained_func)
+    OnLivelinessGainedFunc const on_liveliness_gained_func,
+    OnDeadlineMissedFunc const on_deadline_missed_func)
   {
-    return create(node_hdl, heartbeat_topic, DEFAULT_DEADLINE, DEFAULT_LIVELINESS_LEASE_DURATION, on_liveliness_lost_func, on_liveliness_gained_func);
+    return create(node_hdl, heartbeat_topic, DEFAULT_DEADLINE, DEFAULT_LIVELINESS_LEASE_DURATION, on_liveliness_lost_func, on_liveliness_gained_func, on_deadline_missed_func);
   }
 
 
@@ -68,7 +71,8 @@ public:
     std::chrono::milliseconds const heartbeat_deadline,
     std::chrono::milliseconds const heartbeat_liveliness_lease_duration,
     OnLivelinessLostFunc const on_liveliness_lost_func,
-    OnLivelinessGainedFunc const on_liveliness_gained_func
+    OnLivelinessGainedFunc const on_liveliness_gained_func,
+    OnDeadlineMissedFunc const on_deadline_missed_func
     );
 
 

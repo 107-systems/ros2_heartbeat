@@ -27,7 +27,8 @@ Monitor::Monitor(
   std::chrono::milliseconds const heartbeat_deadline,
   std::chrono::milliseconds const heartbeat_liveliness_lease_duration,
   OnLivelinessLostFunc const on_liveliness_lost_func,
-  OnLivelinessGainedFunc const on_liveliness_gained_func)
+  OnLivelinessGainedFunc const on_liveliness_gained_func,
+  OnDeadlineMissedFunc const on_deadline_missed_func)
 : _heartbeat_qos_profile
 {
   rclcpp::KeepLast(1),
@@ -39,15 +40,10 @@ Monitor::Monitor(
   _heartbeat_qos_profile.liveliness_lease_duration(heartbeat_liveliness_lease_duration);
 
   _heartbeat_sub_options.event_callbacks.deadline_callback =
-    [this, &node_hdl, heartbeat_topic](rclcpp::QOSDeadlineRequestedInfo & event) -> void
+    [on_deadline_missed_func](rclcpp::QOSDeadlineRequestedInfo & event) -> void
     {
-      RCLCPP_ERROR_THROTTLE(node_hdl.get_logger(),
-                            *node_hdl.get_clock(),
-                            5*1000UL,
-                            "deadline missed for \"%s\" (total_count: %d, total_count_change: %d).",
-                            heartbeat_topic.c_str(),
-                            event.total_count,
-                            event.total_count_change);
+      if (on_deadline_missed_func)
+        on_deadline_missed_func(event);
     };
 
   _heartbeat_sub_options.event_callbacks.liveliness_callback =
