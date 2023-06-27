@@ -53,10 +53,16 @@ Monitor::Monitor(
   _heartbeat_sub_options.event_callbacks.liveliness_callback =
     [this, &node_hdl, on_liveliness_lost_func, on_liveliness_gained_func, heartbeat_topic](rclcpp::QOSLivelinessChangedInfo & event) -> void
     {
-      if      (event.alive_count == 0)
-        on_liveliness_lost_func();
+      if (event.alive_count == 0)
+      {
+        if (on_liveliness_lost_func)
+          on_liveliness_lost_func();
+      }
       else if (event.alive_count == 1)
-        on_liveliness_gained_func();
+      {
+        if (on_liveliness_gained_func)
+          on_liveliness_gained_func();
+      }
       else
         RCLCPP_ERROR(node_hdl.get_logger(), "more than one publisher missed for \"%s\".", heartbeat_topic.c_str());
     };
