@@ -24,7 +24,7 @@ namespace heartbeat
 Publisher::Publisher(
   rclcpp::Node & node_hdl,
   std::string const & heartbeat_topic,
-  std::chrono::milliseconds const heartbeat_rate,
+  std::chrono::milliseconds const heartbeat_period,
   std::chrono::milliseconds const heartbeat_deadline,
   std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
 : _heartbeat_start{std::chrono::steady_clock::now()}
@@ -44,7 +44,7 @@ Publisher::Publisher(
     );
 
   _heartbeat_loop_timer = node_hdl.create_wall_timer(
-    heartbeat_rate,
+    heartbeat_period,
     [this]()
     {
       auto const node_up_time = std::chrono::steady_clock::now() - _heartbeat_start;

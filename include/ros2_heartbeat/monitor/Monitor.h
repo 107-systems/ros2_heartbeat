@@ -20,6 +20,8 @@
 
 #include <std_msgs/msg/u_int64.hpp>
 
+#include "../DefaultConfig.h"
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -44,6 +46,12 @@ public:
     std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
   {
     return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_deadline, heartbeat_liveliness_lease_duration);
+  }
+  static SharedPtr create(
+    rclcpp::Node & node_hdl,
+    std::string const & heartbeat_topic)
+  {
+    return create(node_hdl, heartbeat_topic, DEFAULT_DEADLINE, DEFAULT_LIVELINESS_LEASE_DURATION);
   }
 
 

@@ -20,6 +20,8 @@
 
 #include <std_msgs/msg/u_int64.hpp>
 
+#include "../DefaultConfig.h"
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -40,18 +42,23 @@ public:
   static SharedPtr create(
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
-    std::chrono::milliseconds const heartbeat_rate,
+    std::chrono::milliseconds const heartbeat_period,
     std::chrono::milliseconds const heartbeat_deadline,
     std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
   {
-    return std::make_shared<Publisher>(node_hdl, heartbeat_topic, heartbeat_rate, heartbeat_deadline, heartbeat_liveliness_lease_duration);
+    return std::make_shared<Publisher>(node_hdl, heartbeat_topic, heartbeat_period, heartbeat_deadline, heartbeat_liveliness_lease_duration);
   }
-
+  static SharedPtr create(
+    rclcpp::Node & node_hdl,
+    std::string const & heartbeat_topic)
+  {
+    return create(node_hdl, heartbeat_topic, DEFAULT_PERIOD, DEFAULT_DEADLINE, DEFAULT_LIVELINESS_LEASE_DURATION);
+  }
 
   Publisher(
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
-    std::chrono::milliseconds const heartbeat_rate,
+    std::chrono::milliseconds const heartbeat_period,
     std::chrono::milliseconds const heartbeat_deadline,
     std::chrono::milliseconds const heartbeat_liveliness_lease_duration
     );
