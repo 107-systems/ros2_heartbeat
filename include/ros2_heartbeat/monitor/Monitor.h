@@ -14,6 +14,7 @@
 #include <chrono>
 #include <string>
 #include <memory>
+#include <functional>
 
 #include <rclcpp/qos.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -37,21 +38,27 @@ class Monitor
 {
 public:
   typedef std::shared_ptr<Monitor> SharedPtr;
+  typedef std::function<void()> OnLivelinessLostFunc;
+  typedef std::function<void()> OnLivelinessGainedFunc;
 
 
   static SharedPtr create(
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
     std::chrono::milliseconds const heartbeat_deadline,
-    std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
+    std::chrono::milliseconds const heartbeat_liveliness_lease_duration,
+    OnLivelinessLostFunc const on_liveliness_lost_func,
+    OnLivelinessGainedFunc const on_liveliness_gained_func)
   {
-    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_deadline, heartbeat_liveliness_lease_duration);
+    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_deadline, heartbeat_liveliness_lease_duration, on_liveliness_lost_func, on_liveliness_gained_func);
   }
   static SharedPtr create(
     rclcpp::Node & node_hdl,
-    std::string const & heartbeat_topic)
+    std::string const & heartbeat_topic,
+    OnLivelinessLostFunc const on_liveliness_lost_func,
+    OnLivelinessGainedFunc const on_liveliness_gained_func)
   {
-    return create(node_hdl, heartbeat_topic, DEFAULT_DEADLINE, DEFAULT_LIVELINESS_LEASE_DURATION);
+    return create(node_hdl, heartbeat_topic, DEFAULT_DEADLINE, DEFAULT_LIVELINESS_LEASE_DURATION, on_liveliness_lost_func, on_liveliness_gained_func);
   }
 
 
@@ -59,12 +66,15 @@ public:
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
     std::chrono::milliseconds const heartbeat_deadline,
-    std::chrono::milliseconds const heartbeat_liveliness_lease_duration
+    std::chrono::milliseconds const heartbeat_liveliness_lease_duration,
+    OnLivelinessLostFunc const on_liveliness_lost_func,
+    OnLivelinessGainedFunc const on_liveliness_gained_func
     );
 
 
 private:
   rclcpp::QoS _heartbeat_qos_profile;
+  rclcpp::SubscriptionOptions _heartbeat_sub_options;
   rclcpp::Subscription<std_msgs::msg::UInt64>::SharedPtr _heartbeat_sub;
 };
 
