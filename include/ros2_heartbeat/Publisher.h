@@ -42,9 +42,9 @@ public:
     std::string const & heartbeat_topic,
     std::chrono::milliseconds const heartbeat_rate,
     std::chrono::milliseconds const heartbeat_deadline,
-    std::chrono::milliseconds const liveliness_lease_duration)
+    std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
   {
-    return std::make_shared<Publisher>(node_hdl, heartbeat_topic, heartbeat_rate, heartbeat_deadline, liveliness_lease_duration);
+    return std::make_shared<Publisher>(node_hdl, heartbeat_topic, heartbeat_rate, heartbeat_deadline, heartbeat_liveliness_lease_duration);
   }
 
 
@@ -53,7 +53,7 @@ public:
     std::string const & heartbeat_topic,
     std::chrono::milliseconds const heartbeat_rate,
     std::chrono::milliseconds const heartbeat_deadline,
-    std::chrono::milliseconds const liveliness_lease_duration
+    std::chrono::milliseconds const heartbeat_liveliness_lease_duration
     );
 
 

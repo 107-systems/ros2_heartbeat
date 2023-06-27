@@ -26,7 +26,7 @@ Publisher::Publisher(
   std::string const & heartbeat_topic,
   std::chrono::milliseconds const heartbeat_rate,
   std::chrono::milliseconds const heartbeat_deadline,
-  std::chrono::milliseconds const liveliness_lease_duration)
+  std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
 : _heartbeat_start{std::chrono::steady_clock::now()}
 , _heartbeat_qos_profile
 {
@@ -36,7 +36,7 @@ Publisher::Publisher(
 {
   _heartbeat_qos_profile.deadline(heartbeat_deadline);
   _heartbeat_qos_profile.liveliness(RMW_QOS_POLICY_LIVELINESS_MANUAL_BY_TOPIC);
-  _heartbeat_qos_profile.liveliness_lease_duration(liveliness_lease_duration);
+  _heartbeat_qos_profile.liveliness_lease_duration(heartbeat_liveliness_lease_duration);
 
   _heartbeat_pub = node_hdl.create_publisher<std_msgs::msg::UInt64>(
     heartbeat_topic,

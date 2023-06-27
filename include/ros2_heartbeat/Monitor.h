@@ -15,6 +15,7 @@
 #include <string>
 #include <memory>
 
+#include <rclcpp/qos.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <std_msgs/msg/u_int64.hpp>
@@ -36,24 +37,26 @@ public:
   typedef std::shared_ptr<Monitor> SharedPtr;
 
 
-  static SharedPtr create(rclcpp::Node & node_hdl, std::string const & heartbeat_topic, std::chrono::milliseconds const heartbeat_timeout) {
-    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_timeout);
+  static SharedPtr create(
+    rclcpp::Node & node_hdl,
+    std::string const & heartbeat_topic,
+    std::chrono::milliseconds const heartbeat_deadline,
+    std::chrono::milliseconds const heartbeat_liveliness_lease_duration)
+  {
+    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_deadline, heartbeat_liveliness_lease_duration);
   }
 
 
   Monitor(
     rclcpp::Node & node_hdl,
     std::string const & heartbeat_topic,
-    std::chrono::milliseconds const heartbeat_timeout
+    std::chrono::milliseconds const heartbeat_deadline,
+    std::chrono::milliseconds const heartbeat_liveliness_lease_duration
     );
 
 
-  std::tuple<bool, std::chrono::milliseconds> isTimeout() const;
-
-
 private:
-  std::chrono::milliseconds const _heartbeat_timeout;
-  std::chrono::steady_clock::time_point _prev_heartbeat_timepoint;
+  rclcpp::QoS _heartbeat_qos_profile;
   rclcpp::Subscription<std_msgs::msg::UInt64>::SharedPtr _heartbeat_sub;
 };
 
