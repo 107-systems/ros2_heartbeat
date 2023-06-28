@@ -10,14 +10,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <tuple>
 #include <chrono>
-#include <string>
-#include <memory>
-
-#include <rclcpp/rclcpp.hpp>
-
-#include <std_msgs/msg/u_int64.hpp>
 
 /**************************************************************************************
  * NAMESPACE
@@ -27,35 +20,12 @@ namespace heartbeat
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * TYPEDEF
  **************************************************************************************/
 
-class Monitor
-{
-public:
-  typedef std::shared_ptr<Monitor> SharedPtr;
-
-
-  static SharedPtr create(rclcpp::Node & node_hdl, std::string const & heartbeat_topic, std::chrono::milliseconds const heartbeat_timeout) {
-    return std::make_shared<Monitor>(node_hdl, heartbeat_topic, heartbeat_timeout);
-  }
-
-
-  Monitor(
-    rclcpp::Node & node_hdl,
-    std::string const & heartbeat_topic,
-    std::chrono::milliseconds const heartbeat_timeout
-    );
-
-
-  std::tuple<bool, std::chrono::milliseconds> isTimeout() const;
-
-
-private:
-  std::chrono::milliseconds const _heartbeat_timeout;
-  std::chrono::steady_clock::time_point _prev_heartbeat_timepoint;
-  rclcpp::Subscription<std_msgs::msg::UInt64>::SharedPtr _heartbeat_sub;
-};
+static std::chrono::milliseconds constexpr DEFAULT_PERIOD{100};
+static std::chrono::milliseconds constexpr DEFAULT_DEADLINE{2 * DEFAULT_PERIOD};
+static std::chrono::milliseconds constexpr DEFAULT_LIVELINESS_LEASE_DURATION{1000};
 
 /**************************************************************************************
  * NAMESPACE
